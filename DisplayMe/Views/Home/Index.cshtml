@@ -6,8 +6,11 @@
     <meta http-equiv="refresh" content="10">
     <link rel="icon" href="/favicon.ico" />
 </head>
-@if (Model != null)
-{
+<body>
+    @if (Model != null)
+    {
+    <h3>Церква Святого Предікшна - "Храм Тривоги"</h3>
+    <div>Останнє оновлення (UTC): @Model.LastUpdateTime</div><br />
     <div class="divTable">
         <div class="divTableHeading">
             <div class="divTableHead">Область</div>
@@ -23,9 +26,19 @@
         </div>
         }
     </div>
-}
-else
-{
-    <div>There is no data :(</div>
-}
+    <br />
+    <div>Про сторінку:<br/>Стан та передбачення тривог по областям, а також передбачення відбою.<br />Зроблено на основі алгоритмів і моделей машинного навчання.</div>
+    <div>Дані для моделей взяті звідси https://t.me/air_alert_ua </div>
+    <br />
+    <div>models evaluations:</div>
+    @foreach (var modelEval in Model.ModelEvaluations)
+    {
+    <div>@modelEval</div>
+    }
+    }
+    else
+    {
+    <div>щось нема даних зовсім :(</div>
+    }
+</body>
 </html>
