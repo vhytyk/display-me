@@ -1,0 +1,31 @@
+﻿@model DisplayMe.Models.TryvohaPayload
+<html>
+<head>
+    <title>Церква Святого Предікшна "Храм Тривоги"</title>
+    <link rel="stylesheet" href="~/css/site.css">
+    <meta http-equiv="refresh" content="10">
+    <link rel="icon" href="/favicon.ico" />
+</head>
+@if (Model != null)
+{
+    <div class="divTable">
+        <div class="divTableHeading">
+            <div class="divTableHead">Область</div>
+            <div class="divTableHead">Стан</div>
+            <div class="divTableHead">Передбачення</div>
+        </div>
+        @foreach (var region in Model.Regions.Keys.OrderBy(r => r))
+        {
+        <div class="divTableRow@(Model.Regions[region].GetRowClass())">
+            <div class="divTableCell">@region</div>
+            <div class="divTableCell">@(Model.Regions[region].Status ? "тривога" : "немає")</div>
+            <div class="divTableCell">@(Model.Regions[region].GetPrediction())</div>
+        </div>
+        }
+    </div>
+}
+else
+{
+    <div>There is no data :(</div>
+}
+</html>
