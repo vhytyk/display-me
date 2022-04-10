@@ -6,8 +6,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using DisplayMe.Models;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Localization.Routing;
+using Microsoft.AspNetCore.Routing;
 
 namespace DisplayMe
 {
@@ -25,6 +30,18 @@ namespace DisplayMe
         {
             services.AddRazorPages();
             services.AddControllers();
+            services.AddLocalization(opts => opts.ResourcesPath = "Resources");
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var supportedCultures = new[]{
+                    new CultureInfo("uk-UA"),
+                    new CultureInfo("en-US")
+                };
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+                options.RequestCultureProviders.Insert(0, new RouteDataRequestCultureProvider());
+            });
+            services.AddTransient<RegionStatus>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,11 +62,15 @@ namespace DisplayMe
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseRequestLocalization();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
+
+                endpoints.MapControllerRoute(
+                    name: "culture-route", 
+                    pattern: "{culture=uk-UA}/{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

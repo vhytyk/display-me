@@ -1,44 +1,53 @@
-﻿@model DisplayMe.Models.TryvohaPayload
+﻿@using System.Globalization
+@using DisplayMe.Controllers
+@using Microsoft.Extensions.Localization
+@model DisplayMe.Models.TryvohaPayload
+@inject IStringLocalizer<HomeController> Localizer
 <html>
 <head>
-    <title>Церква Святого Предікшна "Храм Тривоги"</title>
+    <title>@Localizer["Церква Святого Предікшна - \"Храм Тривоги\""]</title>
     <link rel="stylesheet" href="~/css/site.css">
     <meta http-equiv="refresh" content="10">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="/favicon.ico" />
 </head>
 <body>
-    @if (Model != null)
-    {
-    <h3>Церква Святого Предікшна - "Храм Тривоги"</h3>
-    <div>Останнє оновлення (UTC): @Model.LastUpdateTime</div><br />
+@if (Model != null)
+{
+    <h3>@Localizer["Церква Святого Предікшна - \"Храм Тривоги\""]</h3>
+
+    <div>@Localizer["Останнє оновлення"] (UTC): @Model.LastUpdateTime</div>
+    <div>lang: @(CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "en" ? Html.ActionLink("ua","", new {culture="uk-UA"}) : Html.ActionLink("en-US","", new {culture="en-US"}))</div>
+    <br />
     <div class="divTable">
         <div class="divTableHeading">
-            <div class="divTableHead">Область</div>
-            <div class="divTableHead">Стан</div>
-            <div class="divTableHead">Передбачення</div>
+            <div class="divTableHead">@Localizer["Область"]</div>
+            <div class="divTableHead">@Localizer["Стан"]</div>
+            <div class="divTableHead">@Localizer["Передбачення"]</div>
         </div>
         @foreach (var region in Model.Regions.Keys.OrderBy(r => r))
         {
-        <div class="divTableRow@(Model.Regions[region].GetRowClass())">
-            <div class="divTableCell">@region</div>
-            <div class="divTableCell">@(Model.Regions[region].Status ? "тривога" : "немає")</div>
-            <div class="divTableCell">@(Model.Regions[region].GetPrediction())</div>
-        </div>
+            <div class="divTableRow@(Model.Regions[region].GetRowClass())">
+                <div class="divTableCell">@Localizer[region]</div>
+                <div class="divTableCell">@(Model.Regions[region].Status ? Localizer["тривога"] : Localizer["немає"])</div>
+                <div class="divTableCell">@(Model.Regions[region].GetPrediction(Localizer))</div>
+            </div>
         }
     </div>
     <br />
-    <div>Про сторінку:<br/>Стан та передбачення тривог по областям, а також передбачення відбою.<br />Зроблено на основі алгоритмів і моделей машинного навчання.</div>
-    <div>Дані для моделей взяті звідси https://t.me/air_alert_ua </div>
+    <div>@Localizer["Про сторінку:"]<br />@Localizer["Стан та передбачення тривог по областям, а також передбачення відбою."]<br />@Localizer["Зроблено на основі алгоритмів і моделей машинного навчання."]</div>
+    <div>@Localizer["Дані для моделей взяті звідси https://t.me/air_alert_ua"]</div>
+    <div>Source code: https://github.com/vhytyk/tryvoha-prediction, https://github.com/vhytyk/display-me</div>
     <br />
     <div>models evaluations:</div>
     @foreach (var modelEval in Model.ModelEvaluations)
     {
-    <div>@modelEval</div>
+        <div>@modelEval</div>
     }
-    }
-    else
-    {
+}
+else
+{
     <div>щось нема даних зовсім :(</div>
-    }
+}
 </body>
 </html>
